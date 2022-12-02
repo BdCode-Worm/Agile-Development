@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.32804.182
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMPReportingTool", "PMPReportingTool.csproj", "{2BC6ED44-6E70-475C-AA58-3BF1372FFFBA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2BC6ED44-6E70-475C-AA58-3BF1372FFFBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BC6ED44-6E70-475C-AA58-3BF1372FFFBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BC6ED44-6E70-475C-AA58-3BF1372FFFBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BC6ED44-6E70-475C-AA58-3BF1372FFFBA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {78C74C7F-0593-416C-AF26-5889822D8E25}
+	EndGlobalSection
+EndGlobal
