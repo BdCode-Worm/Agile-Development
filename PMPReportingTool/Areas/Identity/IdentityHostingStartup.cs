@@ -20,7 +20,11 @@ namespace PMPReportingTool.Areas.Identity
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("PMPReportingDBContextConnection")));
 
-                services.AddDefaultIdentity<PMPReportingUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                services.AddDefaultIdentity<PMPReportingUser>(options => {
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireUppercase = false;
+                    options.SignIn.RequireConfirmedAccount = false;
+                })
                     .AddEntityFrameworkStores<PMPReportingDBContext>();
             });
         }
