@@ -345,3 +345,4 @@ D:\Work\PMP-Agile\PMPReportingTool\obj\Debug\netcoreapp3.1\PMPReportingTool.pdb
 D:\Work\PMP-Agile\PMPReportingTool\obj\Debug\netcoreapp3.1\PMPReportingTool.genruntimeconfig.cache
 D:\Work\PMP-Agile\PMPReportingTool\bin\Debug\netcoreapp3.1\Syncfusion.EJ2.dll
 D:\Work\PMP-Agile\PMPReportingTool\bin\Debug\netcoreapp3.1\Syncfusion.Licensing.dll
+D:\Work\PMP-Agile\PMPReportingTool\obj\Debug\netcoreapp3.1\PMPReportingTool.csproj.AssemblyReference.cache

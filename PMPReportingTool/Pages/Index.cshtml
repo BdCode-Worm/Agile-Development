@@ -2,12 +2,38 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
+    List<MasterAgreementDetails> agreement = new List<MasterAgreementDetails>();
+    if (agreement.Count() == 0)
+    {
+        int code = 10000;
+        for (int i = 1; i < 5; i++)
+        {
+            agreement.Add(new MasterAgreementDetails(code + 1, "Web Development Team", "Team", 1, "Published", new DateTime(2022, 12, 12), new DateTime(2023, 12, 31), "Frankfurt University of Applied Sciences", "Franfurt Am Main", "Kirchgasse 6", new DateTime(2022, 12, 21)));
+            agreement.Add(new MasterAgreementDetails(code + 1, "Software Development Team", "Team", 1, "Published", new DateTime(2022, 12, 20), new DateTime(2023, 07, 10), "Mobile hubs limited", "Hamburg", "Kuntola", new DateTime(2022, 12, 21)));
+            agreement.Add(new MasterAgreementDetails(code + 1, "Web Development Team2", "Single", 1, "Published", new DateTime(2022, 12, 05), new DateTime(2023, 02, 21), "Simplexhub limited", "Berlin", "Mehedi Hasan", new DateTime(2022, 12, 21)));
+            agreement.Add(new MasterAgreementDetails(code + 1, "Web Development Team3", "Team", 1, "Published", new DateTime(2022, 12, 05), new DateTime(2023, 04, 25), "Acer Malaysia", "Malaysia", "Rizwan", new DateTime(2022, 12, 21)));
+            agreement.Add(new MasterAgreementDetails(code + 1, "Web Development Team4", "Team", 2, "Published", new DateTime(2022, 12, 01), new DateTime(2023, 12, 20), "Deloitte", "Franfurt Am Main", "Kirchgasse 6", new DateTime(2022, 12, 21)));
+            code += 5;
+        }
+    }
 }
 
 <div class="text-center">
-    <h1 class="display-4">PMP</h1>
-    <p>Welcome to Provider Management Reporting Platform </p>
+    <h2 class="display-4">Master Agreements</h2>
 </div>
-<div>
-    <ejs-calendar id="calendar"></ejs-calendar>
+
+<div class="text-center">
+    <ejs-grid id="Grid" dataSource="@agreement" allowPaging="true" allowSorting="true" allowFiltering="true" allowGrouping="true">
+        <e-grid-pagesettings pageSize="5"></e-grid-pagesettings>
+        <e-grid-columns>
+            <e-grid-column field="MasterAgreementID" headerText="Agreement ID" textAlign="Right" width="120"></e-grid-column>
+            <e-grid-column field="MasterAgreementName" headerText="Agreement Name"  width="150"></e-grid-column> 
+            <e-grid-column field="AgreementType" headerText="Agreement Type" width="130" textAlign="Right" format="yMd"></e-grid-column>      
+            <e-grid-column field="Cycle" headerText="Cycle" width="120"></e-grid-column>
+            <e-grid-column field="Status" headerText="Status" width="120"></e-grid-column>
+            <e-grid-column field="StartDate" headerText="StartDate" width="120"></e-grid-column>
+            <e-grid-column field="EndDate" headerText="EndDate" width="120"></e-grid-column>
+            <e-grid-column field="Company" headerText="Comapany" width="120"></e-grid-column>
+        </e-grid-columns>
+    </ejs-grid>
 </div>
