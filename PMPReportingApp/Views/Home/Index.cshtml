@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@*<div>
+    <ejs-calendar id="calendar"></ejs-calendar>
+</div>*@
+
+<div class="row mb-4">
+
+    <div class="col-md-4">
+        <div class="d-flex flex-row widget summary income">
+            <div class="d-flex flex-column m-auto py-3" style="text-align:center">
+                <span class="lead">Total Master Agreement</span>
+                <h1 class="display-6 fw-bold">@ViewBag.MasterAgreementCount</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="d-flex flex-row widget summary expense">
+            <div class="d-flex flex-column m-auto py-3" style="text-align:center">
+                <span class="lead">Total Bids</span>
+                <h1 class="display-6 fw-bold">20</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="d-flex flex-row widget summary balance">
+            <div class="d-flex flex-column m-auto py-3" style="text-align:center">
+                <span class="lead">Total Open Agreements</span>
+                <h1 class="display-6 fw-bold">12</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="control-section" align='center'>
+            <ejs-accumulationchart id="doughnutchart" title="Top Positions" enableSmartLabels>
+                <e-accumulationchart-legendsettings visible="true" position="Top">
+                </e-accumulationchart-legendsettings>
+                <e-accumulationchart-tooltipsettings enable="true"></e-accumulationchart-tooltipsettings>
+                <e-accumulation-series-collection>
+                    <e-accumulation-series dataSource="ViewBag.dataSource" xName="xValue" yName="yValue" radius="70%" innerRadius="40%" name="Position" explode=true explodeOffset="10%" explodeIndex=3>
+                        <e-accumulationseries-datalabel visible="true" name="text">
+                            <e-font fontWeight="600" color="white"></e-font>
+                        </e-accumulationseries-datalabel>
+                    </e-accumulation-series>
+                </e-accumulation-series-collection>
+            </ejs-accumulationchart>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="text-center">
+            <h4>Providers Service score</h4>
+        </div>
+
+        </br>
+
+            <div class="text-center">
+            <ejs-grid id="Grid" dataSource="@ViewBag.Providers" allowSorting="true">
+        <e-grid-columns>
+                    <e-grid-column headerText="Provider name"  field="ProviderName" textAlign="Center" width="60"></e-grid-column>
+                    <e-grid-column headerText="Total Bids" field="TotalBid" textAlign="Center" width="40"></e-grid-column>
+                    <e-grid-column headerText="Compltd Projects" field="CompletedProject" textAlign="Center" width="45"></e-grid-column>
+                    <e-grid-column headerText="Running Project" field="OngoingProject" textAlign="Center" width="50"></e-grid-column>
+                    <e-grid-column headerText="Service score" field="ServiceScore" textAlign="Center" width="45"></e-grid-column>
+        </e-grid-columns>
+    </ejs-grid>
+</div>
+     </div>
+</div>
+   
+

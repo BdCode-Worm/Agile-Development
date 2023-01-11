@@ -57,4 +57,25 @@ namespace PMPReportingTool.Pages
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
     }
+
+    public class DoughnutData
+    {
+
+        public DoughnutData()
+        {
+
+        }
+
+        public DoughnutData(string xvalue, double yValue, string text)
+        {
+            this.XValue = xvalue;
+            this.YValue = yValue;
+            this.Text = text;
+        }
+
+
+        public string XValue { get; set; }
+        public double YValue { get; set; }
+        public string Text { get; set; }
+    }
 }

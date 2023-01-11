@@ -1,0 +1,19 @@
+﻿<div class="text-center">
+    <h2 class="display-4">Master Agreements</h2>
+</div>
+
+<div class="text-center">
+    <ejs-grid id="Grid" dataSource="@ViewBag.MasterAgreements" allowPaging="true" allowSorting="true" allowFiltering="true" allowGrouping="true">
+        <e-grid-pagesettings pageSize="5"></e-grid-pagesettings>
+        <e-grid-columns>
+            <e-grid-column field="MasterAgreementID" headerText="Agreement ID" textAlign="Right" width="120"></e-grid-column>
+            <e-grid-column field="MasterAgreementName" headerText="Agreement Name" width="150"></e-grid-column>
+            <e-grid-column field="AgreementType" headerText="Agreement Type" width="130" textAlign="Right" format="yMd"></e-grid-column>
+            <e-grid-column field="Cycle" headerText="Cycle" width="120"></e-grid-column>
+            <e-grid-column field="Status" headerText="Status" width="120"></e-grid-column>
+            <e-grid-column field="StartDate" headerText="StartDate" width="120"></e-grid-column>
+            <e-grid-column field="EndDate" headerText="EndDate" width="120"></e-grid-column>
+            <e-grid-column field="Company" headerText="Comapany" width="120"></e-grid-column>
+        </e-grid-columns>
+    </ejs-grid>
+</div>

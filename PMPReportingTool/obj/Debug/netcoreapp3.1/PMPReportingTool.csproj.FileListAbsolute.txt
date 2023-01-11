@@ -346,3 +346,5 @@ D:\Work\PMP-Agile\PMPReportingTool\obj\Debug\netcoreapp3.1\PMPReportingTool.genr
 D:\Work\PMP-Agile\PMPReportingTool\bin\Debug\netcoreapp3.1\Syncfusion.EJ2.dll
 D:\Work\PMP-Agile\PMPReportingTool\bin\Debug\netcoreapp3.1\Syncfusion.Licensing.dll
 D:\Work\PMP-Agile\PMPReportingTool\obj\Debug\netcoreapp3.1\PMPReportingTool.csproj.AssemblyReference.cache
+C:\Users\Md.Rizwanul\Downloads\Agile\PMP-Agile\PMPReportingTool\bin\Debug\netcoreapp3.1\Syncfusion.EJ2.dll
+C:\Users\Md.Rizwanul\Downloads\Agile\PMP-Agile\PMPReportingTool\bin\Debug\netcoreapp3.1\Syncfusion.Licensing.dll
