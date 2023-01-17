@@ -6,14 +6,14 @@
     <ejs-grid id="Grid" dataSource="@ViewBag.MasterAgreements" allowPaging="true" allowSorting="true" allowFiltering="true" allowGrouping="true">
         <e-grid-pagesettings pageSize="5"></e-grid-pagesettings>
         <e-grid-columns>
-            <e-grid-column field="MasterAgreementID" headerText="Agreement ID" textAlign="Right" width="120"></e-grid-column>
-            <e-grid-column field="MasterAgreementName" headerText="Agreement Name" width="150"></e-grid-column>
-            <e-grid-column field="AgreementType" headerText="Agreement Type" width="130" textAlign="Right" format="yMd"></e-grid-column>
-            <e-grid-column field="Cycle" headerText="Cycle" width="120"></e-grid-column>
-            <e-grid-column field="Status" headerText="Status" width="120"></e-grid-column>
-            <e-grid-column field="StartDate" headerText="StartDate" width="120"></e-grid-column>
-            <e-grid-column field="EndDate" headerText="EndDate" width="120"></e-grid-column>
-            <e-grid-column field="Company" headerText="Comapany" width="120"></e-grid-column>
+            @*<e-grid-column field="_id" headerText="Agreement ID" textAlign="Right" width="120" hidden="hidden"></e-grid-column>*@            
+            <e-grid-column field="name" headerText="Agreement Name" width="250" textAlign="Center"></e-grid-column>
+            <e-grid-column field="type" headerText="Agreement Type" width="130" textAlign="Center" format="yMd"></e-grid-column>
+            <e-grid-column field="cycle" headerText="Cycle" width="120" textAlign="Center"></e-grid-column>
+            <e-grid-column field="status" headerText="Status" width="120" textAlign="Center"></e-grid-column>
+            <e-grid-column field="startTime" headerText="StartDate" width="120" textAlign="Center"></e-grid-column>
+            <e-grid-column field="endTime" headerText="EndDate" width="120" textAlign="Center"></e-grid-column>
+            <e-grid-column field="location" headerText="Location" width="120" textAlign="Center"></e-grid-column>
         </e-grid-columns>
     </ejs-grid>
 </div>

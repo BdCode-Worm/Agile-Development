@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PMPReportingApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Numerics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -15,16 +19,30 @@ namespace PMPReportingApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        List<MasterAgreementDetails> agreement = new List<MasterAgreementDetails>();
+        List<MasterAgreement> agreements = new List<MasterAgreement>();
+        List<AgreementDetails> agreementDetails = new List<AgreementDetails>();
+
+
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
+            await FetchMasterAgreementsDataFromAPIAsync();
+            await FetchMasterAgreementDetailsDataFromAPIAsync();
+
+            agreements = FetchMasterAgreementsDataFromAPIAsync().Result;
+            agreementDetails = FetchMasterAgreementDetailsDataFromAPIAsync().Result;
+
             List<MasterAgreementDetails> agreement = GetMasterAgreementList();
-            ViewBag.MasterAgreementCount = agreement.Count();
+            ViewBag.MasterAgreementCount = agreements.Count();
+
+            ViewBag.ClosedAgreements = agreement.Select(x => x.Status == "closed").ToList().Count();
+            ViewBag.OpenAgreements = agreement.Select(x => x.Status != "closed").ToList().Count();
 
 
             List<AgreementPosition> positions = new List<AgreementPosition>
@@ -48,14 +66,34 @@ namespace PMPReportingApp.Controllers
                 new AgreementPosition(17, "QA Engineer", "Development", "Development", "", DateTime.Now)
             };
 
-            List<DoughnutData> chartData = new List<DoughnutData>
+
+
+            List<DoughnutData> chartData = new List<DoughnutData>();
+
+            foreach (var position in agreementDetails.GroupBy(info => info.name)
+                        .Select(group => new {
+                            name = group.Key,
+                            Count = group.Count(),
+                            percentage = (int)Math.Round((double)(100 * group.Count()) / agreementDetails.Count())
+                        })
+                        .OrderBy(x => x.name))
             {
-                new DoughnutData { xValue =  "Project Manager", yValue = 13, text = "13%" },
-                new DoughnutData { xValue =  "Team Lead", yValue = 20, text = "20%" },
-                new DoughnutData { xValue =  "Software Engineer", yValue = 35, text = "35%" },
-                new DoughnutData { xValue =  "QA Engineer", yValue = 20, text = "20%" },
-                new DoughnutData { xValue =  "Others", yValue = 12, text = "12%" }
-            };
+                Console.WriteLine("{0} {1}", position.name, position.Count, position.percentage);
+                chartData.Add(new DoughnutData { xValue = position.name, yValue = position.Count, text = position.percentage.ToString()+"%" });
+            }
+
+
+            //foreach(AgreementDetails)
+
+            //{
+            //    new DoughnutData { xValue =  "Project Manager", yValue = 13, text = "13%" },
+            //    new DoughnutData { xValue =  "Team Lead", yValue = 20, text = "20%" },
+            //    new DoughnutData { xValue =  "Software Engineer", yValue = 35, text = "35%" },
+            //    new DoughnutData { xValue =  "QA Engineer", yValue = 20, text = "20%" },
+            //    new DoughnutData { xValue =  "Others", yValue = 12, text = "12%" }
+            //};
+
+
 
             ViewBag.dataSource = chartData;
 
@@ -76,11 +114,74 @@ namespace PMPReportingApp.Controllers
             return View();
         }
 
+        private async Task<List<MasterAgreement>> FetchMasterAgreementsDataFromAPIAsync()
+        {
+            string baseUrl = "https://provider-management-platform-server.onrender.com/agreements";
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    using (HttpResponseMessage res = await client.GetAsync(baseUrl))
+                    {
+                        using (HttpContent content = res.Content)
+                        {
+                            var data = await content.ReadAsStringAsync();
+                            if (data != null)
+                            {
+                                agreements = JsonConvert.DeserializeObject<List<MasterAgreement>>(data);
+                            }
+                            else
+                            {
+                                //Console.WriteLine("NO Data----------");
+                            }
+                        }
+                    }
+                }
+
+                return agreements;
+            }
+            catch (Exception exception)
+            {
+                return null;
+            }
+        }
+        private async Task<List<AgreementDetails>> FetchMasterAgreementDetailsDataFromAPIAsync()
+        {
+            string baseUrl = "https://provider-management-platform-server.onrender.com/agreementsdetails";
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    using (HttpResponseMessage res = await client.GetAsync(baseUrl))
+                    {
+                        using (HttpContent content = res.Content)
+                        {
+                            var data = await content.ReadAsStringAsync();
+                            if (data != null)
+                            {
+                                agreementDetails = JsonConvert.DeserializeObject<List<AgreementDetails>>(data);
+                            }
+                            else
+                            {
+                                //Console.WriteLine("NO Data----------");
+                            }
+                        }
+                    }
+                }
+
+                return agreementDetails;
+            }
+            catch (Exception exception)
+            {
+                return null;
+            }
+        }
+
+
         public IActionResult MasterAgreements()
         {
-            List<MasterAgreementDetails> agreement = GetMasterAgreementList();
-
-            ViewBag.MasterAgreements = agreement;
+            agreements = FetchMasterAgreementsDataFromAPIAsync().Result;
+            ViewBag.MasterAgreements = agreements;
             return View();
         }
 

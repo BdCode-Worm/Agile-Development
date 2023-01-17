@@ -16,37 +16,7 @@
             code += 5;
         }
     }
-
-    List<DoughnutData> chartData = new List<DoughnutData>();
-
-    if (chartData.Count() == 0)
-    {
-        chartData.Add(new DoughnutData("Labour", 18, "18%"));
-        chartData.Add(new DoughnutData  ( "Legal",  8,  "8%" ));
-        chartData.Add(new DoughnutData ( "Production", 15, "15%" ));
-        chartData.Add(new DoughnutData ( "License", 11, "11%" ));
-        chartData.Add(new DoughnutData ( "Facilities", 18, "18%" ));
-        chartData.Add(new DoughnutData ( "Taxes", 14, "14%" ));
-        chartData.Add(new DoughnutData ( "Insurance", 16, "16%" ));
-     };
 }
-
-
-
-<div class="text-center">
-    <ejs-accumulationchart id="container" title="Project Cost Breakdown">
-        <e-accumulationchart-legendsettings visible="true" position="Top">
-        </e-accumulationchart-legendsettings>
-        <e-accumulationchart-tooltipsettings enable="false"></e-accumulationchart-tooltipsettings>
-        <e-accumulation-series-collection>
-            <e-accumulation-series dataSource="@chartData" xName="xValue" yName="yValue" radius="70%" innerRadius="40%" name="Project" explode=true explodeOffset="10%" explodeIndex=3>
-                <e-accumulationseries-datalabel visible="true" name="text">
-                    <e-font fontWeight="600" color="white"></e-font>
-                </e-accumulationseries-datalabel>
-            </e-accumulation-series>
-        </e-accumulation-series-collection>
-    </ejs-accumulationchart>
-</div>
 
 <div class="text-center">
     <h2 class="display-4">Master Agreements</h2>
