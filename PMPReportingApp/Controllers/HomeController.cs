@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -7,6 +8,7 @@ using PMPReportingApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Numerics;
@@ -22,6 +24,10 @@ namespace PMPReportingApp.Controllers
         List<MasterAgreementDetails> agreement = new List<MasterAgreementDetails>();
         List<MasterAgreement> agreements = new List<MasterAgreement>();
         List<AgreementDetails> agreementDetails = new List<AgreementDetails>();
+        List<AgreementReviews> reviews = new List<AgreementReviews>();  
+        List<AgreementOffers> offers = new List<AgreementOffers>();
+        List<AgreementOffers> providerOffers = new List<AgreementOffers>();
+
 
 
 
@@ -34,18 +40,27 @@ namespace PMPReportingApp.Controllers
         {
             await FetchMasterAgreementsDataFromAPIAsync();
             await FetchMasterAgreementDetailsDataFromAPIAsync();
+            await FetchOffersDataFromAPIAsync();
+            await FetchFeedbackScoreDataFromAPIAsync();
+            await FetchOffersofProvidersFromAPIAsync();
 
             agreements = FetchMasterAgreementsDataFromAPIAsync().Result;
             agreementDetails = FetchMasterAgreementDetailsDataFromAPIAsync().Result;
+            offers = FetchOffersDataFromAPIAsync().Result;
+            providerOffers = FetchOffersofProvidersFromAPIAsync().Result;
+            reviews = FetchFeedbackScoreDataFromAPIAsync().Result;
 
             List<MasterAgreementDetails> agreement = GetMasterAgreementList();
             ViewBag.MasterAgreementCount = agreements.Count();
 
-            ViewBag.ClosedAgreements = agreement.Select(x => x.Status == "closed").ToList().Count();
-            ViewBag.OpenAgreements = agreement.Select(x => x.Status != "closed").ToList().Count();
+            ViewBag.ClosedAgreements = (from data in agreements
+                                       where data.status == "closed"
+                                       select data).ToList().Count();
+            ViewBag.OpenAgreements = (from data in agreements
+                                      where data.status != "closed"
+                                      select data).ToList().Count();
 
-
-            List<AgreementPosition> positions = new List<AgreementPosition>
+            List <AgreementPosition> positions = new List<AgreementPosition>
             {
                 new AgreementPosition(1, "Team Lead", "Development", "Development", "", DateTime.Now),
                 new AgreementPosition(2, "Software Engineer", "Development", "Development", "", DateTime.Now),
@@ -66,8 +81,6 @@ namespace PMPReportingApp.Controllers
                 new AgreementPosition(17, "QA Engineer", "Development", "Development", "", DateTime.Now)
             };
 
-
-
             List<DoughnutData> chartData = new List<DoughnutData>();
 
             foreach (var position in agreementDetails.GroupBy(info => info.name)
@@ -83,15 +96,141 @@ namespace PMPReportingApp.Controllers
             }
 
 
-            //foreach(AgreementDetails)
+            //foreach (var provider in providerOffers.GroupBy(info => info.provider_name)
+            //            .Select(group => new {
+            //                name = group.Key,
+            //                Count = group.Count(),
 
+            //            })
+            //            .OrderBy(x => x.name))
             //{
-            //    new DoughnutData { xValue =  "Project Manager", yValue = 13, text = "13%" },
-            //    new DoughnutData { xValue =  "Team Lead", yValue = 20, text = "20%" },
-            //    new DoughnutData { xValue =  "Software Engineer", yValue = 35, text = "35%" },
-            //    new DoughnutData { xValue =  "QA Engineer", yValue = 20, text = "20%" },
-            //    new DoughnutData { xValue =  "Others", yValue = 12, text = "12%" }
-            //};
+            //    Console.WriteLine("{0} {1}", position.name, position.Count, position.percentage);
+            //    chartData.Add(new DoughnutData { xValue = position.name, yValue = position.Count, text = position.percentage.ToString() + "%" });
+            //}
+
+
+            ////var query = from ttb2 in reviews
+            ////            join ttab in providerOffers on ttb2.Provider_Name equals ttab.provider_name
+            ////            join pt in offers on ttb2.Provider_Name equals pt.provider_name
+            ////            select new {
+            ////                provider = pt.provider_name,
+            ////                //agreement = pt.agreementsid,
+            ////                //provider_status = pt.status, 
+            ////                //actual_status = ttab.status, 
+            ////                reviews = ttb2.raiting
+            ////                            };
+
+            var query1 = from ttb2 in offers
+                        join ttab in agreementDetails on ttb2.positionid equals ttab._id
+                        select new
+                        {
+                            postion_name = ttab.name,
+                            provider = ttb2.provider_name,
+                            rates = ttb2.rate
+                        };
+
+
+            ViewBag.RateList = query1.ToList();
+
+
+            List<ChartData> chartData1 = new List<ChartData>();
+            var query2 = from ttb2 in agreements
+                         join ttab in offers on ttb2._id equals ttab.agreementsid
+                         where ttab.status == "accept"
+                         select new
+                         {
+                             project = ttb2.name,
+                             total_cost = (Convert.ToDateTime(ttb2.endTime) - Convert.ToDateTime(ttb2.startTime)).TotalDays * Convert.ToInt32(ttab.rate)
+                         };
+          
+
+            foreach (var q in query2)
+            {
+                chartData1.Add(new ChartData { xValue = q.project, yValue = q.total_cost});
+            }
+
+            ViewBag.dataSource1 = chartData1.ToList();
+
+            // (EndDate - StartDate).TotalDays
+
+            List<ServiceScoreData> scores = new List<ServiceScoreData>();
+            List<ServiceScoreData> profilesOffered = new List<ServiceScoreData>();
+
+            foreach (var review in reviews.GroupBy(info => info.Provider_Name)
+                        .Select(group => new
+                        {
+                            name = group.Key,
+                            Count = group.Count(),
+                            review = (group.Sum(s => Convert.ToInt32(s.raiting)) / group.Count())
+                        })
+                        .OrderBy(x => x.name))
+            {
+                Console.WriteLine("{0} {1}", review.name, review.Count, review.review);
+                if (review.name == "D")
+                {
+                    scores.Add(new ServiceScoreData
+                    {
+                        provider = review.name,
+                        score = review.review,
+                        projects = review.Count,
+                        profilesOffered = 3
+                    });
+                }
+                else
+                {
+                    scores.Add(new ServiceScoreData
+                    {
+                        provider = review.name,
+                        score = review.review,
+                        projects = review.Count,
+                        profilesOffered = 1
+                    });
+                }
+            }
+
+            ViewBag.ServiceScore = scores;
+
+            foreach (var offer in offers.GroupBy(info => info.provider_name)
+                        .Select(group => new
+                        {
+                            name = group.Key,
+                            Count = group.Count()
+                        })
+                        .OrderBy(x => x.name))
+            {
+                Console.WriteLine("{0} {1}", offer.name, offer.Count);
+                //scores.Add(new ServiceScoreData { provider = review.name, score = review.review, projects = review.Count });
+            }
+
+
+            //var query2 = from ttb2 in scores
+            //             join ttab in providerOffers on ttb2.provider equals ttab.provider_name
+            //             select new
+            //             {
+            //                 provider = ttb2.provider,
+            //                 score = ttb2.,
+            //                 reviews = ttb2.raiting
+            //             };
+
+            //ViewBag.ServiceScore = query2.ToList();
+
+
+            //var query3 = from ttb2 in reviews
+            //             select new
+            //             {
+            //                 provider = ttb2.Provider_Name,
+            //                 count = 1,
+            //                 reviews = ttb2.raiting
+            //             };
+
+            //var rates = reviews
+            //   .GroupBy(g => g.Provider_Name, r => r.raiting)
+            //   .Select(g => new
+            //   {
+            //       UserId = g.Key,
+            //       Rating = r.Average()
+            //   })
+
 
 
 
@@ -112,6 +251,122 @@ namespace PMPReportingApp.Controllers
             ViewBag.Providers = providers;
 
             return View();
+        }
+
+        private async Task<List<AgreementOffers>> FetchOffersofProvidersFromAPIAsync()
+        {
+            List<AgreementOffers> providerOffered = new List<AgreementOffers>();
+
+            var providers = new Dictionary<string, string>(){
+                            {"A", "Provider-A"},
+                            {"B", "Provider-B"},
+                            {"C", "Provider-C"},
+                            {"D", "Provider-D"}
+                        };
+
+
+            try
+            {
+                foreach (var datas in providers)
+                {
+                    List<AgreementOffers> offered= new List<AgreementOffers>();
+
+                    string baseUrl = "http://ec2-3-127-137-126.eu-central-1.compute.amazonaws.com/users/offers?provider=" + datas.Key + "";
+
+                    using (HttpClient client = new HttpClient())
+                    {
+                        using (HttpResponseMessage res = await client.GetAsync(baseUrl))
+                        {
+                            using (HttpContent content = res.Content)
+                            {
+                                var data = await content.ReadAsStringAsync();
+                                if (data != null)
+                                {
+                                    offered = JsonConvert.DeserializeObject<List<AgreementOffers>>(data);
+                                }
+                                else
+                                {
+                                    //Console.WriteLine("NO Data----------");
+                                }
+                            }
+                        }
+                    }
+
+                    providerOffered.AddRange(offered);
+                }
+            }
+
+            catch (Exception exception)
+            {
+                return null;
+            }
+            providerOffers = providerOffered;
+
+            return providerOffers;
+        }
+
+        private async Task<List<AgreementReviews>> FetchFeedbackScoreDataFromAPIAsync()
+        {
+            string baseUrl = "https://provider-management-platform-server.onrender.com/reviews";
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    using (HttpResponseMessage res = await client.GetAsync(baseUrl))
+                    {
+                        using (HttpContent content = res.Content)
+                        {
+                            var data = await content.ReadAsStringAsync();
+                            if (data != null)
+                            {
+                                reviews = JsonConvert.DeserializeObject<List<AgreementReviews>>(data);
+                            }
+                            else
+                            {
+                                //Console.WriteLine("NO Data----------");
+                            }
+                        }
+                    }
+                }
+
+                return reviews;
+            }
+            catch (Exception exception)
+            {
+                return null;
+            }
+        }
+
+        private async Task<List<AgreementOffers>> FetchOffersDataFromAPIAsync()
+        {
+            string baseUrl = "https://provider-management-platform-server.onrender.com/selectedProfile";
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    using (HttpResponseMessage res = await client.GetAsync(baseUrl))
+                    {
+                        using (HttpContent content = res.Content)
+                        {
+                            var data = await content.ReadAsStringAsync();
+                            if (data != null)
+                            {
+                                offers = JsonConvert.DeserializeObject<List<AgreementOffers>>(data);
+                            }
+                            else
+                            {
+                                //Console.WriteLine("NO Data----------");
+                            }
+                        }
+                    }
+                }
+
+                return offers;
+            }
+            catch (Exception exception)
+            {
+                return null;
+            }
         }
 
         private async Task<List<MasterAgreement>> FetchMasterAgreementsDataFromAPIAsync()
@@ -217,5 +472,24 @@ namespace PMPReportingApp.Controllers
         public string xValue;
         public double yValue;
         public string text;
+    }
+    public class BarChartData
+    {
+        public string x;
+        public double y;
+    }
+
+    public class ServiceScoreData
+    {
+        public string provider;
+        public double score;
+        public int projects;
+        public int profilesOffered;
+    }
+
+    public class ChartData
+    {
+        public string xValue;
+        public double yValue;
     }
 }

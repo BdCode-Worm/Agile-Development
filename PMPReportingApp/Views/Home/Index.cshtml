@@ -61,7 +61,7 @@
         </br>
 
             <div class="text-center">
-            <ejs-grid id="Grid" dataSource="@ViewBag.Providers" allowSorting="true">
+@*            <ejs-grid id="Grid" dataSource="@ViewBag.Providers" allowSorting="true">
         <e-grid-columns>
                     <e-grid-column headerText="Provider name"  field="ProviderName" textAlign="Center" width="60"></e-grid-column>
                     <e-grid-column headerText="Total Bids" field="TotalBid" textAlign="Center" width="40"></e-grid-column>
@@ -69,9 +69,103 @@
                     <e-grid-column headerText="Running Project" field="OngoingProject" textAlign="Center" width="50"></e-grid-column>
                     <e-grid-column headerText="Service score" field="ServiceScore" textAlign="Center" width="45"></e-grid-column>
         </e-grid-columns>
-    </ejs-grid>
+    </ejs-grid>*@
+            <ejs-grid id="Grid" dataSource="@ViewBag.ServiceScore" allowSorting="true">
+                <e-grid-columns>
+                    <e-grid-column headerText="Provider name" field="provider" textAlign="Center" width="100"></e-grid-column>
+                    <e-grid-column headerText="Completed Project" field="projects" textAlign="Center" width="100"></e-grid-column>
+                    <e-grid-column headerText="Service Score" field="score" textAlign="Center" width="100"></e-grid-column>
+                    <e-grid-column headerText="Profiles Offered" field="profilesOffered" textAlign="Center" width="100"></e-grid-column>
+                </e-grid-columns>
+            </ejs-grid>
 </div>
      </div>
 </div>
-   
 
+@*<div class="control-section">
+    <div id="container" align='center'>
+        <ejs-chart id="lineContainer" load="window.onChartLoad" title="UK Trade in Food Groups - 2015">
+            <e-chart-chartarea>
+                <e-chartarea-border width="0"></e-chartarea-border>
+            </e-chart-chartarea>
+            <e-chart-tooltipsettings enable="true">
+            </e-chart-tooltipsettings>
+            <e-chart-primaryxaxis valueType="Category" title="Food"
+                                  interval=1>
+                <e-majorgridlines width="0"></e-majorgridlines>
+            </e-chart-primaryxaxis>
+            <e-chart-primaryyaxis labelFormat="{value}B"
+                                  edgeLabelPlacement="Shift">
+                <e-majorgridlines width="0"></e-majorgridlines>
+                <e-majorticklines width="0"></e-majorticklines>
+                <e-linestyle width="0"></e-linestyle>
+                <e-labelstyle color="transparent"></e-labelstyle>
+            </e-chart-primaryyaxis>
+            <e-series-collection>
+                <e-series dataSource="ViewBag.dataSource" xName="x" yName="y" name="Imports" width=2 type="@Syncfusion.EJ2.Charts.ChartSeriesType.Bar">
+                    <e-series-marker>
+                        <e-series-datalabel position="Top" visible="true">
+                            <e-font color="#ffffff" fontWeight="600"></e-font>
+                        </e-series-datalabel>
+                    </e-series-marker>
+                </e-series>
+                <e-series dataSource="ViewBag.dataSource1" xName="x" yName="y" name="Exports" width=2 type="@Syncfusion.EJ2.Charts.ChartSeriesType.Bar">
+                    <e-series-marker>
+                        <e-series-datalabel position="Top" visible="true">
+                            <e-font color="#ffffff" fontWeight="600"></e-font>
+                        </e-series-datalabel>
+                    </e-series-marker>
+                </e-series>
+            </e-series-collection>
+        </ejs-chart>
+    </div>
+</div>*@
+@*<div class="text-center">
+    <h2 class="display-4">Master Agreements</h2>
+</div>
+
+<div class="text-center">
+    <ejs-grid id="Grid" dataSource="@ViewBag.RateList" allowPaging="true" allowSorting="true" allowFiltering="true" allowGrouping="true">
+        <e-grid-pagesettings pageSize="5"></e-grid-pagesettings>
+        <e-grid-columns>
+            <e-grid-column field="postion_name" headerText="position name" width="250" textAlign="Center"></e-grid-column>
+            <e-grid-column field="rates" headerText="Cycle" width="120" textAlign="Center"></e-grid-column>
+            <e-grid-column field="provider" headerText="Provider_name" width="130" textAlign="Center" format="yMd"></e-grid-column>
+        </e-grid-columns>
+    </ejs-grid>
+</div>*@
+<div class="row">
+<div class="col-md-6">
+    <div class="text-center">
+        <h4>Position Rates</h4>
+    </div>
+
+    <div class="text-center">
+        <ejs-grid id="Grid12" dataSource="@ViewBag.RateList" allowSorting="true" allowFiltering="true" allowGrouping="true">
+            <e-grid-columns>
+                <e-grid-column headerText="Position Name" field="postion_name" textAlign="Center" width="60"></e-grid-column>
+                <e-grid-column headerText="Provider Name" field="provider" textAlign="Center" width="40"></e-grid-column>
+                <e-grid-column headerText="Rates" field="rates" textAlign="Center" width="45"></e-grid-column>
+            </e-grid-columns>
+        </ejs-grid>
+    </div>
+    </div>
+
+<div class="col-md-6">
+            <div class="text-center">
+                <h4>Project Costing</h4> 
+            </div>
+<ejs-chart id="container">
+            <e-chart-primaryxaxis valueType="Category">
+    </e-chart-primaryxaxis>
+            <e-chart-primaryyaxis title="Cost (€)" f></e-chart-primaryyaxis>
+    <e-series-collection>
+        <e-series name="Project" xName="xValue" yName="yValue" dataSource="ViewBag.dataSource1"
+                  type="@Syncfusion.EJ2.Charts.ChartSeriesType.Column">
+        </e-series>
+    </e-series-collection>
+</ejs-chart>
+</div>
+
+
+</div>
