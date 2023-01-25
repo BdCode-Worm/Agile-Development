@@ -96,30 +96,6 @@ namespace PMPReportingApp.Controllers
             }
 
 
-            //foreach (var provider in providerOffers.GroupBy(info => info.provider_name)
-            //            .Select(group => new {
-            //                name = group.Key,
-            //                Count = group.Count(),
-
-            //            })
-            //            .OrderBy(x => x.name))
-            //{
-            //    Console.WriteLine("{0} {1}", position.name, position.Count, position.percentage);
-            //    chartData.Add(new DoughnutData { xValue = position.name, yValue = position.Count, text = position.percentage.ToString() + "%" });
-            //}
-
-
-            ////var query = from ttb2 in reviews
-            ////            join ttab in providerOffers on ttb2.Provider_Name equals ttab.provider_name
-            ////            join pt in offers on ttb2.Provider_Name equals pt.provider_name
-            ////            select new {
-            ////                provider = pt.provider_name,
-            ////                //agreement = pt.agreementsid,
-            ////                //provider_status = pt.status, 
-            ////                //actual_status = ttab.status, 
-            ////                reviews = ttb2.raiting
-            ////                            };
-
             var query1 = from ttb2 in offers
                         join ttab in agreementDetails on ttb2.positionid equals ttab._id
                         select new
@@ -151,7 +127,21 @@ namespace PMPReportingApp.Controllers
 
             ViewBag.dataSource1 = chartData1.ToList();
 
-            // (EndDate - StartDate).TotalDays
+
+            var query3 = from ttb2 in agreements
+                         join ttab in offers on ttb2._id equals ttab.agreementsid
+                         where ttab.status == "accept"
+                         select new
+                         {
+                             project = ttb2.name,
+                             provider = ttab.provider_name,
+                             duration = (Convert.ToDateTime(ttb2.endTime) - Convert.ToDateTime(ttb2.startTime)).TotalDays,
+                             total_cost = (Convert.ToDateTime(ttb2.endTime) - Convert.ToDateTime(ttb2.startTime)).TotalDays * Convert.ToInt32(ttab.rate)
+                         };
+
+
+            ViewBag.dataSource3 = query3.ToList();
+
 
             List<ServiceScoreData> scores = new List<ServiceScoreData>();
             List<ServiceScoreData> profilesOffered = new List<ServiceScoreData>();
@@ -201,37 +191,6 @@ namespace PMPReportingApp.Controllers
                 Console.WriteLine("{0} {1}", offer.name, offer.Count);
                 //scores.Add(new ServiceScoreData { provider = review.name, score = review.review, projects = review.Count });
             }
-
-
-            //var query2 = from ttb2 in scores
-            //             join ttab in providerOffers on ttb2.provider equals ttab.provider_name
-            //             select new
-            //             {
-            //                 provider = ttb2.provider,
-            //                 score = ttb2.,
-            //                 reviews = ttb2.raiting
-            //             };
-
-            //ViewBag.ServiceScore = query2.ToList();
-
-
-            //var query3 = from ttb2 in reviews
-            //             select new
-            //             {
-            //                 provider = ttb2.Provider_Name,
-            //                 count = 1,
-            //                 reviews = ttb2.raiting
-            //             };
-
-            //var rates = reviews
-            //   .GroupBy(g => g.Provider_Name, r => r.raiting)
-            //   .Select(g => new
-            //   {
-            //       UserId = g.Key,
-            //       Rating = r.Average()
-            //   })
-
-
 
 
             ViewBag.dataSource = chartData;
